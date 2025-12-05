@@ -1,0 +1,8 @@
+# User credentials (never commit)
+credentials.json
+
+# Actual oauth-app.json with real client_id (use .example)
+skills/google-workspace/oauth-app.json
+
+# OS files
+.DS_Store
