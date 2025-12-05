@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "google-workspace",
-      "source": "./skills/google-workspace",
+      "source": "./plugins/google-workspace",
       "description": "Read-only access to Google Workspace (Drive, Docs, Sheets, Slides, Calendar, Gmail) using curl and the Google APIs directly",
       "version": "1.0.0",
       "author": {
