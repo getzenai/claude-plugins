@@ -1,6 +1,6 @@
 ---
 name: google-workspace
-description: Full access to Google Workspace - Drive, Docs, Sheets, Slides, Calendar, and Gmail. Use for searching files, reading/writing documents, managing calendar events, and email operations. First check if user has authenticated, if not guide them through the OAuth flow.
+description: Full access to Google Workspace (Drive, Docs, Sheets, Slides, Calendar, Gmail) using curl and the Google APIs directly - no MCP server or additional dependencies required. Use for searching files, reading/writing documents, managing calendar events, and email operations. First check if user has authenticated, if not guide them through the OAuth flow.
 ---
 
 # Google Workspace Integration

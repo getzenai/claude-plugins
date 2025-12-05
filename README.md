@@ -1,6 +1,6 @@
 # Claude Code Plugins by Zen AI
 
-A collection of [Claude Code](https://claude.ai/code) plugins. Currently includes **google-workspace** which provides full access to Google Workspace APIs (Drive, Docs, Sheets, Slides, Calendar, Gmail) via curl commands.
+A collection of [Claude Code](https://claude.ai/code) plugins. Currently includes **google-workspace** which provides full access to Google Workspace APIs (Drive, Docs, Sheets, Slides, Calendar, Gmail) using curl and the Google APIs directly - no MCP server or additional dependencies required.
 
 ## Installation
 
@@ -112,13 +112,13 @@ Create `oauth-app.json` in your skill folder:
 }
 ```
 
-**Important**: Store the `client_secret` in 1Password or similar - do NOT commit it.
+**Important**: The `client_secret` is sensitive and should NOT be committed to your repository.
 
 ### Part 2: User Authentication (Each user, ~3 minutes)
 
 Each user needs to complete this once:
 
-1. **Get client_secret** from admin (1Password, secure message)
+1. **Get client_secret** from admin (a secure channel)
 2. **Generate auth URL** and open in browser
 3. **Authorize** and copy the code from redirect URL
 4. **Exchange code** for refresh token
@@ -142,7 +142,7 @@ Once set up, ask Claude Code things like:
 | Credential | Storage | Committed? |
 |------------|---------|------------|
 | `client_id` | `oauth-app.json` | Yes (public anyway) |
-| `client_secret` | 1Password | No |
+| `client_secret` | Secure storage | No |
 | `refresh_token` | `~/.config/gdrive-skill/` | No (personal) |
 
 ### Revoking Access
