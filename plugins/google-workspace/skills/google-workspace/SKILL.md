@@ -34,55 +34,58 @@ If `USER_NOT_AUTHENTICATED`, guide the user through the Setup section below.
 
 ## Setup (One-Time per User, ~3 minutes)
 
-### Step 1: Get Client Secret from Admin
+**IMPORTANT**: The user needs to provide their `client_id` and `client_secret` from Google Cloud Console. They can get these by creating OAuth 2.0 credentials (Desktop app type) in their Google Cloud project.
 
-Ask your team admin for the `client_secret`. They should share it via a secure channel (1Password, Slack DM, etc.).
+### Step 1: Get OAuth Credentials
 
-### Step 2: Open Authorization URL
+Ask the user for their `client_id` and `client_secret`. Only these two values are needed:
+- `client_id`: looks like `xxx.apps.googleusercontent.com`
+- `client_secret`: looks like `GOCSPX-xxx`
+
+The skill's `oauth-app.json` file should already contain the `client_id`.
+
+### Step 2: Generate and Open Authorization URL
+
+**Note**: When running bash commands with special characters like parentheses in values, wrap the entire command in `bash -c '...'` to avoid shell parsing issues.
 
 ```bash
-CLIENT_ID=$(cat .claude/skills/gdrive/oauth-app.json | jq -r '.client_id')
-SCOPES="https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/gmail.modify"
-ENCODED_SCOPES=$(echo $SCOPES | sed 's/ /%20/g')
-echo "Open this URL in your browser:"
-echo "https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=http://localhost&scope=${ENCODED_SCOPES}&response_type=code&access_type=offline&prompt=consent"
+bash -c 'CLIENT_ID="YOUR_CLIENT_ID"; SCOPES="https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/gmail.modify"; ENCODED_SCOPES=$(echo $SCOPES | sed "s/ /%20/g"); echo "https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=http://localhost&scope=${ENCODED_SCOPES}&response_type=code&access_type=offline&prompt=consent"'
 ```
 
-### Step 3: Authorize and Copy Code
+Tell the user to open this URL in their browser.
 
-1. Sign in with your Google account
-2. Click "Allow" to grant access to Google Workspace
-3. You'll be redirected to `http://localhost/?code=XXXXX...`
-4. Copy the `code` value from the URL (everything after `code=` and before any `&`)
+### Step 3: Authorize and Get Redirect URL
+
+1. User signs in with their Google account
+2. User clicks "Allow" to grant access to Google Workspace
+3. User will be redirected to `http://localhost/?code=XXXXX...` (the page won't load - that's expected)
+4. **Ask the user to copy and paste the ENTIRE redirect URL** (not just the code). This is easier for users than extracting just the code parameter.
+
+Example redirect URL:
+```
+http://localhost/?code=4/0ATx...XXX&scope=https://www.googleapis.com/auth/drive%20...
+```
 
 ### Step 4: Exchange Code for Refresh Token
 
-Run this command (replace YOUR_AUTH_CODE and YOUR_CLIENT_SECRET):
+Extract the code from the URL (everything between `code=` and `&scope=`) and exchange it:
 
 ```bash
-CLIENT_ID=$(cat .claude/skills/gdrive/oauth-app.json | jq -r '.client_id')
-
-curl -s -X POST https://oauth2.googleapis.com/token \
-  -d "code=YOUR_AUTH_CODE" \
-  -d "client_id=$CLIENT_ID" \
-  -d "client_secret=YOUR_CLIENT_SECRET" \
-  -d "redirect_uri=http://localhost" \
-  -d "grant_type=authorization_code"
+bash -c 'CODE="EXTRACTED_CODE"; CLIENT_ID="YOUR_CLIENT_ID"; CLIENT_SECRET="YOUR_CLIENT_SECRET"; curl -s -X POST https://oauth2.googleapis.com/token -d "code=$CODE" -d "client_id=$CLIENT_ID" -d "client_secret=$CLIENT_SECRET" -d "redirect_uri=http://localhost" -d "grant_type=authorization_code"'
 ```
 
-This returns JSON. Copy the `refresh_token` value.
+This returns JSON with `access_token` and `refresh_token`. Save the `refresh_token`.
 
 ### Step 5: Store Credentials
 
 ```bash
-mkdir -p ~/.config/gdrive-skill
-cat > ~/.config/gdrive-skill/credentials.json << 'EOF'
+mkdir -p ~/.config/gdrive-skill && cat > ~/.config/gdrive-skill/credentials.json << 'EOF'
 {
   "client_secret": "YOUR_CLIENT_SECRET",
   "refresh_token": "YOUR_REFRESH_TOKEN"
 }
 EOF
-chmod 600 ~/.config/gdrive-skill/credentials.json
+chmod 600 ~/.config/gdrive-skill/credentials.json && echo "Credentials saved!"
 ```
 
 Setup complete!
@@ -91,24 +94,18 @@ Setup complete!
 
 ## Authentication
 
-Before making API calls, get a fresh access token:
+Before making API calls, get a fresh access token. Use `bash -c` to avoid shell parsing issues:
 
 ```bash
-CLIENT_ID=$(cat .claude/skills/gdrive/oauth-app.json | jq -r '.client_id')
-USER_CREDS=$(cat ~/.config/gdrive-skill/credentials.json)
-CLIENT_SECRET=$(echo $USER_CREDS | jq -r '.client_secret')
-REFRESH_TOKEN=$(echo $USER_CREDS | jq -r '.refresh_token')
+bash -c 'CLIENT_ID=$(jq -r ".client_id" /PATH/TO/oauth-app.json); USER_CREDS=$(cat ~/.config/gdrive-skill/credentials.json); CLIENT_SECRET=$(echo $USER_CREDS | jq -r ".client_secret"); REFRESH_TOKEN=$(echo $USER_CREDS | jq -r ".refresh_token"); ACCESS_TOKEN=$(curl -s -X POST https://oauth2.googleapis.com/token -d "client_id=$CLIENT_ID" -d "client_secret=$CLIENT_SECRET" -d "refresh_token=$REFRESH_TOKEN" -d "grant_type=refresh_token" | jq -r ".access_token"); echo "ACCESS_TOKEN=$ACCESS_TOKEN"'
+```
 
-ACCESS_TOKEN=$(curl -s -X POST https://oauth2.googleapis.com/token \
-  -d "client_id=$CLIENT_ID" \
-  -d "client_secret=$CLIENT_SECRET" \
-  -d "refresh_token=$REFRESH_TOKEN" \
-  -d "grant_type=refresh_token" | jq -r '.access_token')
+Replace `/PATH/TO/oauth-app.json` with the actual path to the skill's oauth-app.json file (shown in "Base directory for this skill" when the skill loads).
 
-if [ "$ACCESS_TOKEN" = "null" ] || [ -z "$ACCESS_TOKEN" ]; then
-  echo "ERROR: Failed to get access token. Re-run setup."
-  exit 1
-fi
+For subsequent API calls, store the access token and use it:
+
+```bash
+bash -c 'ACCESS_TOKEN="YOUR_ACCESS_TOKEN"; curl -s -H "Authorization: Bearer $ACCESS_TOKEN" "https://www.googleapis.com/drive/v3/files?pageSize=5"'
 ```
 
 ---
