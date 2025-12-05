@@ -1,12 +1,24 @@
 {
-  "name": "Zen AI Claude Plugins",
-  "description": "Collection of Claude Code skills and plugins",
-  "version": "1.0.0",
-  "skills": [
+  "name": "zen-ai-plugins",
+  "owner": {
+    "name": "Zen AI",
+    "email": "hello@zen-ai.io"
+  },
+  "metadata": {
+    "description": "Collection of Claude Code plugins for Google Workspace integration",
+    "version": "1.0.0"
+  },
+  "plugins": [
     {
       "name": "google-workspace",
-      "path": "skills/google-workspace",
-      "description": "Read-only access to Google Workspace (Drive, Docs, Sheets, Slides, Calendar, Gmail) using curl and the Google APIs directly"
+      "source": "./skills/google-workspace",
+      "description": "Read-only access to Google Workspace (Drive, Docs, Sheets, Slides, Calendar, Gmail) using curl and the Google APIs directly",
+      "version": "1.0.0",
+      "author": {
+        "name": "Zen AI"
+      },
+      "keywords": ["google", "drive", "docs", "sheets", "calendar", "gmail", "workspace"],
+      "category": "integration"
     }
   ]
 }
