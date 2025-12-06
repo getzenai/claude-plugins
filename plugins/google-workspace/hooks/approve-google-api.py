@@ -42,6 +42,8 @@ SAFE_COMMAND_PATTERNS = [
     # jq commands for JSON parsing
     r'^jq ',
     r'^echo .* \| jq',
+    # Skill scripts (list-docs.sh, read-doc.sh, etc.)
+    r".*/plugins/google-workspace/skills/google-workspace/scripts/.*\.sh",
 ]
 
 

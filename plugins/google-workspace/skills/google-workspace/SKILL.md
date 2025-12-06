@@ -21,14 +21,54 @@ This skill provides full access to Google Workspace APIs via curl commands.
 Check if user has set up their credentials:
 
 ```bash
-if [ -f ~/.config/gdrive-skill/credentials.json ]; then
-  echo "USER_AUTHENTICATED"
-else
-  echo "USER_NOT_AUTHENTICATED"
-fi
+scripts/check-auth.sh
 ```
 
 If `USER_NOT_AUTHENTICATED`, guide the user through the Setup section below.
+
+---
+
+## Quick Commands (Recommended)
+
+Use these scripts for common operations. They handle authentication automatically.
+
+### Authentication
+```bash
+scripts/check-auth.sh
+```
+
+### Google Drive
+```bash
+scripts/list-files.sh [count]              # List recent files
+scripts/list-docs.sh [count]               # List recent Google Docs
+scripts/search-drive.sh <query> [count]    # Search files by content
+scripts/read-doc.sh <document_id>          # Read a Google Doc as text
+scripts/create-doc.sh <title>              # Create a new Google Doc
+```
+
+### Google Sheets
+```bash
+scripts/read-sheet.sh <spreadsheet_id> [range]   # Read spreadsheet values
+```
+Example: `scripts/read-sheet.sh 1abc123xyz "Sheet1!A1:D10"`
+
+### Google Calendar
+```bash
+scripts/list-events.sh [count]             # List upcoming events
+scripts/create-event.sh <summary> <start> <end> [description]
+```
+Example: `scripts/create-event.sh "Meeting" "2024-12-10T10:00:00" "2024-12-10T11:00:00"`
+
+### Gmail
+```bash
+scripts/list-emails.sh [count] [query]     # List recent emails
+scripts/read-email.sh <message_id>         # Read an email
+```
+Example: `scripts/list-emails.sh 5 "from:someone@example.com"`
+
+---
+
+**For advanced operations or APIs not covered by scripts, see the API Reference sections below.**
 
 ---
 
