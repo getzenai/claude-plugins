@@ -13,4 +13,5 @@ if [ -z "$PRESENTATION_ID" ]; then
 fi
 
 curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://slides.googleapis.com/v1/presentations/$PRESENTATION_ID"
+  "https://slides.googleapis.com/v1/presentations/$PRESENTATION_ID" | \
+  jq '{title: .title, presentationId: .presentationId, slides: [.slides[]? | {objectId: .objectId, texts: [.. | .textRun?.content? // empty] | join("")}]} // .'

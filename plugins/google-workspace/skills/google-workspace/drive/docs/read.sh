@@ -13,4 +13,5 @@ if [ -z "$DOC_ID" ]; then
 fi
 
 curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://docs.googleapis.com/v1/documents/$DOC_ID"
+  "https://docs.googleapis.com/v1/documents/$DOC_ID" | \
+  jq '{title: .title, documentId: .documentId, content: [.body.content[]? | .. | .textRun?.content? // empty] | join("")} // .'

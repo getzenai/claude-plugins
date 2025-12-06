@@ -18,10 +18,14 @@ fi
 if [ -n "$RANGE" ]; then
   # URL encode the range using python for reliability
   ENCODED_RANGE=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1], safe=''))" "$RANGE")
+  # Use FORMATTED_VALUE for human-readable output (currencies, percentages, etc.)
+  # Use FORMATTED_STRING for dates/times instead of serial numbers
   curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-    "https://sheets.googleapis.com/v4/spreadsheets/$SPREADSHEET_ID/values/$ENCODED_RANGE"
+    "https://sheets.googleapis.com/v4/spreadsheets/$SPREADSHEET_ID/values/$ENCODED_RANGE?valueRenderOption=FORMATTED_VALUE&dateTimeRenderOption=FORMATTED_STRING" | \
+    jq '{range: .range, values: .values} // .'
 else
-  # Get spreadsheet metadata and all sheet names
+  # Get spreadsheet metadata and all sheet names - extract just title and sheet names
   curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-    "https://sheets.googleapis.com/v4/spreadsheets/$SPREADSHEET_ID?includeGridData=false"
+    "https://sheets.googleapis.com/v4/spreadsheets/$SPREADSHEET_ID?includeGridData=false" | \
+    jq '{title: .properties.title, spreadsheetId: .spreadsheetId, sheets: [.sheets[].properties | {sheetId, title, index}]} // .'
 fi

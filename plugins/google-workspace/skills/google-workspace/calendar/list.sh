@@ -13,4 +13,5 @@ CALENDAR_ID="${2:-primary}"
 TIME_MIN=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://www.googleapis.com/calendar/v3/calendars/$CALENDAR_ID/events?maxResults=$COUNT&timeMin=$TIME_MIN&orderBy=startTime&singleEvents=true"
+  "https://www.googleapis.com/calendar/v3/calendars/$CALENDAR_ID/events?maxResults=$COUNT&timeMin=$TIME_MIN&orderBy=startTime&singleEvents=true" | \
+  jq '{events: [.items[] | {id, summary, description, start: (.start.dateTime // .start.date), end: (.end.dateTime // .end.date), location, link: .htmlLink, attendees: [.attendees[]? | {email, status: .responseStatus}]}]} // .'
