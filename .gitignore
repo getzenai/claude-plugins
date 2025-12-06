@@ -7,3 +7,5 @@ plugins/google-workspace/skills/google-workspace/oauth-app.json
 
 # OS files
 .DS_Store
+
+input/

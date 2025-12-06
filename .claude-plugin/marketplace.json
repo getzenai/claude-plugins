@@ -5,14 +5,14 @@
     "email": "hello@zen-ai.io"
   },
   "metadata": {
-    "description": "Collection of Claude Code plugins for Google Workspace integration",
-    "version": "1.0.0"
+    "description": "Collection of Claude Code plugins for Google Workspace and Twenty CRM integration",
+    "version": "1.1.0"
   },
   "plugins": [
     {
       "name": "google-workspace",
       "source": "./plugins/google-workspace",
-      "description": "Read-only access to Google Workspace (Drive, Docs, Sheets, Slides, Calendar, Gmail) using curl and the Google APIs directly",
+      "description": "Full access to Google Workspace (Drive, Docs, Sheets, Slides, Calendar, Gmail) using curl and the Google APIs directly",
       "version": "1.0.0",
       "author": {
         "name": "Zen AI"
@@ -25,6 +25,25 @@
         "calendar",
         "gmail",
         "workspace"
+      ],
+      "category": "integration"
+    },
+    {
+      "name": "twenty-crm",
+      "source": "./plugins/twenty-crm",
+      "description": "Full access to Twenty CRM (People, Companies, Opportunities, Tasks, Notes) using curl and the Twenty REST API directly",
+      "version": "1.0.0",
+      "author": {
+        "name": "Zen AI"
+      },
+      "keywords": [
+        "twenty",
+        "crm",
+        "sales",
+        "opportunities",
+        "contacts",
+        "tasks",
+        "notes"
       ],
       "category": "integration"
     }
