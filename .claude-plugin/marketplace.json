@@ -17,7 +17,15 @@
       "author": {
         "name": "Zen AI"
       },
-      "keywords": ["google", "drive", "docs", "sheets", "calendar", "gmail", "workspace"],
+      "keywords": [
+        "google",
+        "drive",
+        "docs",
+        "sheets",
+        "calendar",
+        "gmail",
+        "workspace"
+      ],
       "category": "integration"
     }
   ]

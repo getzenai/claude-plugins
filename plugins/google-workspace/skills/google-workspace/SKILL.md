@@ -115,6 +115,7 @@ Example: `gmail/search.sh "from:john@example.com" 5`
 ### Step 1: Get OAuth Credentials
 
 Ask the user for their `client_id` and `client_secret`. Only these two values are needed:
+
 - `client_id`: looks like `xxx.apps.googleusercontent.com`
 - `client_secret`: looks like `GOCSPX-xxx`
 
@@ -138,6 +139,7 @@ Tell the user to open this URL in their browser.
 4. **Ask the user to copy and paste the ENTIRE redirect URL** (not just the code). This is easier for users than extracting just the code parameter.
 
 Example redirect URL:
+
 ```
 http://localhost/?code=4/0ATx...XXX&scope=https://www.googleapis.com/auth/drive%20...
 ```
@@ -174,31 +176,31 @@ Google Drive API supports powerful query operators beyond simple keyword search.
 
 ### Query Operators
 
-| Operator | Description | Example |
-|----------|-------------|---------|
-| `=`, `!=` | Exact match | `name = 'Report.pdf'` |
-| `<`, `<=`, `>`, `>=` | Date/time comparison | `modifiedTime > '2024-01-01'` |
-| `contains` | Substring match | `name contains 'meeting'` |
-| `in` | Collection membership | `'user@example.com' in owners` |
-| `and`, `or`, `not` | Logical operators | `name contains 'a' and name contains 'b'` |
+| Operator             | Description           | Example                                   |
+| -------------------- | --------------------- | ----------------------------------------- |
+| `=`, `!=`            | Exact match           | `name = 'Report.pdf'`                     |
+| `<`, `<=`, `>`, `>=` | Date/time comparison  | `modifiedTime > '2024-01-01'`             |
+| `contains`           | Substring match       | `name contains 'meeting'`                 |
+| `in`                 | Collection membership | `'user@example.com' in owners`            |
+| `and`, `or`, `not`   | Logical operators     | `name contains 'a' and name contains 'b'` |
 
 ### Searchable Fields
 
-| Field | Description |
-|-------|-------------|
-| `name` | File name |
-| `fullText` | Searches name, description, and content |
-| `mimeType` | File type (e.g., `application/vnd.google-apps.document`) |
-| `modifiedTime` | Last modification (RFC 3339: `2024-12-01T00:00:00Z`) |
-| `createdTime` | Creation date |
-| `viewedByMeTime` | Last viewed by user |
-| `trashed` | In trash (true/false) |
-| `starred` | Starred (true/false) |
-| `parents` | Parent folder ID |
-| `owners` | File owner email |
-| `writers` | Users with write access |
-| `readers` | Users with read access |
-| `sharedWithMe` | In "Shared with me" |
+| Field            | Description                                              |
+| ---------------- | -------------------------------------------------------- |
+| `name`           | File name                                                |
+| `fullText`       | Searches name, description, and content                  |
+| `mimeType`       | File type (e.g., `application/vnd.google-apps.document`) |
+| `modifiedTime`   | Last modification (RFC 3339: `2024-12-01T00:00:00Z`)     |
+| `createdTime`    | Creation date                                            |
+| `viewedByMeTime` | Last viewed by user                                      |
+| `trashed`        | In trash (true/false)                                    |
+| `starred`        | Starred (true/false)                                     |
+| `parents`        | Parent folder ID                                         |
+| `owners`         | File owner email                                         |
+| `writers`        | Users with write access                                  |
+| `readers`        | Users with read access                                   |
+| `sharedWithMe`   | In "Shared with me"                                      |
 
 ---
 

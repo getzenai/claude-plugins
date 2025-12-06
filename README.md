@@ -42,15 +42,15 @@ mv your-project/.claude/skills/gdrive/oauth-app.json.example your-project/.claud
 
 The skill includes comprehensive Google Drive search with:
 
-| Operator | Example |
-|----------|---------|
-| Content search | `fullText contains 'keyword'` |
-| Name matching | `name contains 'meeting'` |
-| Date filtering | `modifiedTime > '2024-01-01'` |
-| File type | `mimeType = 'application/vnd.google-apps.document'` |
-| Ownership | `'user@example.com' in owners` |
-| Shared files | `sharedWithMe = true` |
-| Combine with | `and`, `or`, `not` |
+| Operator       | Example                                             |
+| -------------- | --------------------------------------------------- |
+| Content search | `fullText contains 'keyword'`                       |
+| Name matching  | `name contains 'meeting'`                           |
+| Date filtering | `modifiedTime > '2024-01-01'`                       |
+| File type      | `mimeType = 'application/vnd.google-apps.document'` |
+| Ownership      | `'user@example.com' in owners`                      |
+| Shared files   | `sharedWithMe = true`                               |
+| Combine with   | `and`, `or`, `not`                                  |
 
 ## Setup
 
@@ -68,6 +68,7 @@ One person (admin) creates the shared OAuth app:
 #### Step 2: Enable APIs
 
 Go to **APIs & Services** → **Library** and enable:
+
 - Google Drive API
 - Google Docs API
 - Google Sheets API
@@ -139,11 +140,11 @@ Once set up, ask Claude Code things like:
 
 ## Security
 
-| Credential | Storage | Committed? |
-|------------|---------|------------|
-| `client_id` | `oauth-app.json` | Yes (public anyway) |
-| `client_secret` | Secure storage | No |
-| `refresh_token` | `~/.config/gdrive-skill/` | No (personal) |
+| Credential      | Storage                   | Committed?          |
+| --------------- | ------------------------- | ------------------- |
+| `client_id`     | `oauth-app.json`          | Yes (public anyway) |
+| `client_secret` | Secure storage            | No                  |
+| `refresh_token` | `~/.config/gdrive-skill/` | No (personal)       |
 
 ### Revoking Access
 
@@ -170,6 +171,7 @@ claude-plugins/
 ## Customization
 
 Edit the skill to add:
+
 - Project-specific search patterns
 - Common document IDs
 - Language-specific search terms (e.g., German keywords)
@@ -177,13 +179,13 @@ Edit the skill to add:
 
 ## Troubleshooting
 
-| Error | Solution |
-|-------|----------|
-| "Failed to get access token" | Refresh token expired. Re-run user setup. |
-| Empty search results | Try broader terms, check "Shared with me" |
-| 403 Forbidden | User doesn't have access to resource |
-| 400 Bad Request | Check JSON formatting |
-| "invalid_grant" | Auth code expired (~10 min). Generate new one. |
+| Error                        | Solution                                       |
+| ---------------------------- | ---------------------------------------------- |
+| "Failed to get access token" | Refresh token expired. Re-run user setup.      |
+| Empty search results         | Try broader terms, check "Shared with me"      |
+| 403 Forbidden                | User doesn't have access to resource           |
+| 400 Bad Request              | Check JSON formatting                          |
+| "invalid_grant"              | Auth code expired (~10 min). Generate new one. |
 
 ## References
 
