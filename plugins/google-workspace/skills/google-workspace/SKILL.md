@@ -5,70 +5,106 @@ description: Full access to Google Workspace (Drive, Docs, Sheets, Slides, Calen
 
 # Google Workspace Integration
 
-This skill provides full access to Google Workspace APIs via curl commands.
+This skill provides full access to Google Workspace APIs via helper scripts.
 
 ## Capabilities
 
-- **Drive**: Search, read, create, and organize files
-- **Docs**: Read and write documents
-- **Sheets**: Read and write spreadsheets
-- **Slides**: Read and write presentations
-- **Calendar**: Read and write calendar events
-- **Gmail**: Read, send, and manage emails
+- **Drive**: Search, list, upload, download, and delete files
+- **Docs**: List, search, read, create, and write documents
+- **Sheets**: List, search, read, write, append, and create spreadsheets
+- **Slides**: List, search, read, and create presentations
+- **Calendar**: List, search, get, create, update, and delete events
+- **Gmail**: List, search, read, send, and draft emails
 
 ## Pre-flight Check
 
 Check if user has set up their credentials:
 
 ```bash
-scripts/check-auth.sh
+check-auth.sh
 ```
 
 If `USER_NOT_AUTHENTICATED`, guide the user through the Setup section below.
 
 ---
 
-## Quick Commands (Recommended)
+## Scripts Reference
 
-Use these scripts for common operations. They handle authentication automatically.
+All scripts handle authentication automatically. Use relative paths from the skill directory.
 
-### Authentication
+### Drive - General
+
 ```bash
-scripts/check-auth.sh
+drive/search.sh <query> [count]        # Search all files by content
 ```
 
-### Google Drive
+### Drive - Files
+
 ```bash
-scripts/list-files.sh [count]              # List recent files
-scripts/list-docs.sh [count]               # List recent Google Docs
-scripts/search-drive.sh <query> [count]    # Search files by content
-scripts/read-doc.sh <document_id>          # Read a Google Doc as text
-scripts/create-doc.sh <title>              # Create a new Google Doc
+drive/files/list.sh [count]            # List recent files
+drive/files/upload.sh <local_path> [folder_id]    # Upload file
+drive/files/download.sh <file_id> <output_path>   # Download file
+drive/files/delete.sh <file_id>        # Move file to trash
 ```
 
-### Google Sheets
-```bash
-scripts/read-sheet.sh <spreadsheet_id> [range]   # Read spreadsheet values
-```
-Example: `scripts/read-sheet.sh 1abc123xyz "Sheet1!A1:D10"`
+### Drive - Docs
 
-### Google Calendar
 ```bash
-scripts/list-events.sh [count]             # List upcoming events
-scripts/create-event.sh <summary> <start> <end> [description]
+drive/docs/list.sh [count]             # List recent Google Docs
+drive/docs/search.sh <query>           # Search docs by name
+drive/docs/read.sh <doc_id>            # Read document content
+drive/docs/create.sh <title> [folder_id]    # Create new doc
+drive/docs/write.sh <doc_id> <text> [index] # Write/append text
 ```
-Example: `scripts/create-event.sh "Meeting" "2024-12-10T10:00:00" "2024-12-10T11:00:00"`
+
+### Drive - Sheets
+
+```bash
+drive/sheets/list.sh [count]           # List recent spreadsheets
+drive/sheets/search.sh <query>         # Search sheets by name
+drive/sheets/read.sh <id> [range]      # Read sheet values
+drive/sheets/write.sh <id> <range> <values_json>  # Write values
+drive/sheets/append.sh <id> <sheet_name> <values_json> # Append rows
+drive/sheets/create.sh <title> [folder_id]  # Create new sheet
+```
+
+Example: `drive/sheets/write.sh 1abc "Sheet1!A1:B2" '[["Name","Age"],["John",30]]'`
+
+### Drive - Slides
+
+```bash
+drive/slides/list.sh [count]           # List recent presentations
+drive/slides/search.sh <query>         # Search slides by name
+drive/slides/read.sh <presentation_id> # Read presentation
+drive/slides/create.sh <title> [folder_id]  # Create new presentation
+```
+
+### Calendar
+
+```bash
+calendar/calendars.sh                  # List all calendars
+calendar/list.sh [count] [calendar_id] # List upcoming events
+calendar/search.sh <query> [count] [calendar_id]  # Search events
+calendar/get.sh <event_id> [calendar_id]   # Get event details
+calendar/create.sh <summary> <start> <end> [description] [calendar_id]
+calendar/update.sh <event_id> <json_updates> [calendar_id]
+calendar/delete.sh <event_id> [calendar_id]
+```
+
+Example: `calendar/create.sh "Meeting" "2024-12-10T10:00:00" "2024-12-10T11:00:00"`
 
 ### Gmail
+
 ```bash
-scripts/list-emails.sh [count] [query]     # List recent emails
-scripts/read-email.sh <message_id>         # Read an email
+gmail/labels.sh                        # List all labels
+gmail/list.sh [count] [label]          # List recent emails
+gmail/search.sh <query> [count]        # Search emails
+gmail/read.sh <message_id> [format]    # Read email content
+gmail/send.sh <to> <subject> <body>    # Send email
+gmail/draft.sh <to> <subject> <body>   # Create draft
 ```
-Example: `scripts/list-emails.sh 5 "from:someone@example.com"`
 
----
-
-**For advanced operations or APIs not covered by scripts, see the API Reference sections below.**
+Example: `gmail/search.sh "from:john@example.com" 5`
 
 ---
 
@@ -132,24 +168,6 @@ Setup complete!
 
 ---
 
-## Authentication
-
-Before making API calls, get a fresh access token. Use `bash -c` to avoid shell parsing issues:
-
-```bash
-bash -c 'CLIENT_ID=$(jq -r ".client_id" /PATH/TO/oauth-app.json); USER_CREDS=$(cat ~/.config/gdrive-skill/credentials.json); CLIENT_SECRET=$(echo $USER_CREDS | jq -r ".client_secret"); REFRESH_TOKEN=$(echo $USER_CREDS | jq -r ".refresh_token"); ACCESS_TOKEN=$(curl -s -X POST https://oauth2.googleapis.com/token -d "client_id=$CLIENT_ID" -d "client_secret=$CLIENT_SECRET" -d "refresh_token=$REFRESH_TOKEN" -d "grant_type=refresh_token" | jq -r ".access_token"); echo "ACCESS_TOKEN=$ACCESS_TOKEN"'
-```
-
-Replace `/PATH/TO/oauth-app.json` with the actual path to the skill's oauth-app.json file (shown in "Base directory for this skill" when the skill loads).
-
-For subsequent API calls, store the access token and use it:
-
-```bash
-bash -c 'ACCESS_TOKEN="YOUR_ACCESS_TOKEN"; curl -s -H "Authorization: Bearer $ACCESS_TOKEN" "https://www.googleapis.com/drive/v3/files?pageSize=5"'
-```
-
----
-
 ## Advanced Search Reference
 
 Google Drive API supports powerful query operators beyond simple keyword search.
@@ -181,250 +199,6 @@ Google Drive API supports powerful query operators beyond simple keyword search.
 | `writers` | Users with write access |
 | `readers` | Users with read access |
 | `sharedWithMe` | In "Shared with me" |
-
----
-
-## Google Drive API
-
-### Search Files by Content
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://www.googleapis.com/drive/v3/files?q=fullText%20contains%20'SEARCH_TERM'&fields=files(id,name,mimeType,modifiedTime,webViewLink)"
-```
-
-### Search by Name and Date Range
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://www.googleapis.com/drive/v3/files?q=name%20contains%20'meeting'%20and%20modifiedTime%20%3E%20'2024-01-01T00:00:00Z'&fields=files(id,name,mimeType,modifiedTime,webViewLink)&orderBy=modifiedTime%20desc"
-```
-
-### Files Modified in Last 7 Days
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://www.googleapis.com/drive/v3/files?q=modifiedTime%20%3E%20'$(date -u -v-7d +%Y-%m-%dT%H:%M:%SZ)'&fields=files(id,name,modifiedTime,webViewLink)&orderBy=modifiedTime%20desc"
-```
-
-### Google Docs Only
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://www.googleapis.com/drive/v3/files?q=mimeType%3D'application/vnd.google-apps.document'&fields=files(id,name,modifiedTime,webViewLink)&orderBy=modifiedTime%20desc"
-```
-
-### Files Shared With Me
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://www.googleapis.com/drive/v3/files?q=sharedWithMe%3Dtrue&fields=files(id,name,modifiedTime,webViewLink)&orderBy=modifiedTime%20desc"
-```
-
-### List Recent Files
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime%20desc&pageSize=20&fields=files(id,name,mimeType,modifiedTime,webViewLink)"
-```
-
-### Create a Folder
-
-```bash
-curl -s -X POST -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"name": "FOLDER_NAME", "mimeType": "application/vnd.google-apps.folder"}' \
-  "https://www.googleapis.com/drive/v3/files"
-```
-
-### Upload a File
-
-```bash
-curl -s -X POST -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -F "metadata={name: 'filename.txt'};type=application/json;charset=UTF-8" \
-  -F "file=@/path/to/file.txt" \
-  "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart"
-```
-
----
-
-## Google Docs API
-
-### Read Document as Plain Text
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://www.googleapis.com/drive/v3/files/DOCUMENT_ID/export?mimeType=text/plain"
-```
-
-### Get Document Structure
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://docs.googleapis.com/v1/documents/DOCUMENT_ID"
-```
-
-### Create a New Document
-
-```bash
-curl -s -X POST -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"title": "New Document Title"}' \
-  "https://docs.googleapis.com/v1/documents"
-```
-
-### Append Text to Document
-
-```bash
-curl -s -X POST -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "requests": [{
-      "insertText": {
-        "location": {"index": 1},
-        "text": "Text to insert"
-      }
-    }]
-  }' \
-  "https://docs.googleapis.com/v1/documents/DOCUMENT_ID:batchUpdate"
-```
-
----
-
-## Google Sheets API
-
-### Read Spreadsheet Values
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://sheets.googleapis.com/v4/spreadsheets/SPREADSHEET_ID/values/Sheet1!A1:Z100"
-```
-
-### Get Spreadsheet Metadata
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://sheets.googleapis.com/v4/spreadsheets/SPREADSHEET_ID"
-```
-
-### Write Values to Sheet
-
-```bash
-curl -s -X PUT -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "values": [
-      ["Row1Col1", "Row1Col2"],
-      ["Row2Col1", "Row2Col2"]
-    ]
-  }' \
-  "https://sheets.googleapis.com/v4/spreadsheets/SPREADSHEET_ID/values/Sheet1!A1:B2?valueInputOption=USER_ENTERED"
-```
-
-### Append Row to Sheet
-
-```bash
-curl -s -X POST -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "values": [["Value1", "Value2", "Value3"]]
-  }' \
-  "https://sheets.googleapis.com/v4/spreadsheets/SPREADSHEET_ID/values/Sheet1!A:C:append?valueInputOption=USER_ENTERED"
-```
-
----
-
-## Google Calendar API
-
-### List Upcoming Events
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://www.googleapis.com/calendar/v3/calendars/primary/events?maxResults=10&orderBy=startTime&singleEvents=true&timeMin=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-```
-
-### Get Event Details
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://www.googleapis.com/calendar/v3/calendars/primary/events/EVENT_ID"
-```
-
-### Create Calendar Event
-
-```bash
-curl -s -X POST -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "summary": "Meeting Title",
-    "description": "Meeting description",
-    "start": {"dateTime": "2024-12-10T10:00:00", "timeZone": "America/New_York"},
-    "end": {"dateTime": "2024-12-10T11:00:00", "timeZone": "America/New_York"},
-    "attendees": [{"email": "attendee@example.com"}]
-  }' \
-  "https://www.googleapis.com/calendar/v3/calendars/primary/events?sendUpdates=all"
-```
-
-### Check Free/Busy
-
-```bash
-curl -s -X POST -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "timeMin": "2024-12-10T00:00:00Z",
-    "timeMax": "2024-12-10T23:59:59Z",
-    "items": [{"id": "primary"}]
-  }' \
-  "https://www.googleapis.com/calendar/v3/freeBusy"
-```
-
----
-
-## Gmail API
-
-### List Recent Emails
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=10"
-```
-
-### Search Emails
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://gmail.googleapis.com/gmail/v1/users/me/messages?q=from:someone@example.com%20subject:important"
-```
-
-### Get Email Content
-
-```bash
-curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
-  "https://gmail.googleapis.com/gmail/v1/users/me/messages/MESSAGE_ID?format=full"
-```
-
-### Send Email
-
-```bash
-# Create email content (base64 encoded)
-EMAIL_CONTENT=$(echo -e "To: recipient@example.com\nSubject: Email Subject\nContent-Type: text/plain; charset=utf-8\n\nEmail body text here" | base64 -w 0)
-
-curl -s -X POST -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d "{\"raw\": \"$EMAIL_CONTENT\"}" \
-  "https://gmail.googleapis.com/gmail/v1/users/me/messages/send"
-```
-
-### Create Draft
-
-```bash
-EMAIL_CONTENT=$(echo -e "To: recipient@example.com\nSubject: Draft Subject\n\nDraft body" | base64 -w 0)
-
-curl -s -X POST -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d "{\"message\": {\"raw\": \"$EMAIL_CONTENT\"}}" \
-  "https://gmail.googleapis.com/gmail/v1/users/me/drafts"
-```
 
 ---
 

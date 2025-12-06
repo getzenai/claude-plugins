@@ -3,7 +3,11 @@
 # Usage: source "$(dirname "$0")/_auth.sh"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILL_DIR="$(dirname "$SCRIPT_DIR")"
+# Find skill dir by looking for oauth-app.json
+SKILL_DIR="$SCRIPT_DIR"
+while [ ! -f "$SKILL_DIR/oauth-app.json" ] && [ "$SKILL_DIR" != "/" ]; do
+  SKILL_DIR="$(dirname "$SKILL_DIR")"
+done
 CREDS_FILE="$HOME/.config/gdrive-skill/credentials.json"
 
 # Check if authenticated

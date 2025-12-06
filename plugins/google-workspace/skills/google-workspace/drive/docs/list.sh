@@ -1,8 +1,8 @@
 #!/bin/bash
 # List recent Google Docs
-# Usage: list-docs.sh [count]
+# Usage: list.sh [count]
 
-source "$(dirname "$0")/_auth.sh"
+source "$(dirname "$0")/../../_auth.sh"
 
 COUNT="${1:-10}"
 

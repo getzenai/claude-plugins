@@ -1,8 +1,8 @@
 #!/bin/bash
 # List recent files from Google Drive
-# Usage: list-files.sh [count]
+# Usage: list.sh [count]
 
-source "$(dirname "$0")/_auth.sh"
+source "$(dirname "$0")/../../_auth.sh"
 
 COUNT="${1:-10}"
 
