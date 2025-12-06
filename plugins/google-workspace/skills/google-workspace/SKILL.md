@@ -30,7 +30,7 @@ If `USER_NOT_AUTHENTICATED`, guide the user through the Setup section below.
 
 ## Scripts Reference
 
-All scripts handle authentication automatically. Use relative paths from the skill directory.
+All scripts handle authentication automatically. Prepend the base directory path to all script paths.
 
 ### Drive - General
 
