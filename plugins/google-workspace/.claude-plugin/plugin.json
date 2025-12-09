@@ -1,7 +1,7 @@
 {
   "name": "google-workspace",
   "description": "Full access to Google Workspace (Drive, Docs, Sheets, Slides, Calendar, Gmail) using curl and the Google APIs directly - no MCP server or additional dependencies required",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "Zen AI",
     "email": "hello@zen-ai.io"

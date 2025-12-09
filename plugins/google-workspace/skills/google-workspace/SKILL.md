@@ -52,9 +52,19 @@ drive/files/delete.sh <file_id>        # Move file to trash
 ```bash
 drive/docs/list.sh [count]             # List recent Google Docs
 drive/docs/search.sh <query>           # Search docs by name
-drive/docs/read.sh <doc_id>            # Read document content
+drive/docs/read.sh <doc_id> [options]  # Read document content (supports tabs)
 drive/docs/create.sh <title> [folder_id]    # Create new doc
 drive/docs/write.sh <doc_id> <text> [index] # Write/append text
+```
+
+**Document Tabs**: Google Docs can have multiple tabs. The `read.sh` script supports:
+
+```bash
+drive/docs/read.sh <doc_id>                    # Read first tab (default)
+drive/docs/read.sh <doc_id> --list-tabs        # List all tabs in document
+drive/docs/read.sh <doc_id> --tab "Transcript" # Read tab by name
+drive/docs/read.sh <doc_id> --tab-index 1      # Read tab by index (0-based)
+drive/docs/read.sh <doc_id> --all-tabs         # Read all tabs
 ```
 
 ### Drive - Sheets
