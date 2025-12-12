@@ -5,8 +5,8 @@
     "email": "hello@zen-ai.io"
   },
   "metadata": {
-    "description": "Collection of Claude Code plugins for Google Workspace and Twenty CRM integration",
-    "version": "1.1.0"
+    "description": "Collection of Claude Code plugins for Google Workspace, Twenty CRM, and Brevo integration",
+    "version": "1.2.0"
   },
   "plugins": [
     {
@@ -44,6 +44,24 @@
         "contacts",
         "tasks",
         "notes"
+      ],
+      "category": "integration"
+    },
+    {
+      "name": "brevo",
+      "source": "./plugins/brevo",
+      "description": "Full access to Brevo (email marketing, newsletters) using curl and the Brevo REST API directly",
+      "version": "1.0.0",
+      "author": {
+        "name": "Zen AI"
+      },
+      "keywords": [
+        "brevo",
+        "email",
+        "newsletter",
+        "marketing",
+        "campaigns",
+        "contacts"
       ],
       "category": "integration"
     }

@@ -1,6 +1,12 @@
 # Claude Code Plugins by Zen AI
 
-A collection of [Claude Code](https://claude.ai/code) plugins. Currently includes **google-workspace** which provides full access to Google Workspace APIs (Drive, Docs, Sheets, Slides, Calendar, Gmail) using curl and the Google APIs directly - no MCP server or additional dependencies required.
+A collection of [Claude Code](https://claude.ai/code) plugins:
+
+- **google-workspace** - Full access to Google Workspace APIs (Drive, Docs, Sheets, Slides, Calendar, Gmail)
+- **twenty-crm** - Full access to Twenty CRM (People, Companies, Opportunities, Tasks, Notes)
+- **brevo** - Full access to Brevo email marketing (Contacts, Lists, Campaigns, Templates)
+
+All plugins use curl and REST APIs directly - no MCP server or additional dependencies required.
 
 ## Installation
 
@@ -187,9 +193,49 @@ Edit the skill to add:
 | 400 Bad Request              | Check JSON formatting                          |
 | "invalid_grant"              | Auth code expired (~10 min). Generate new one. |
 
+---
+
+## Brevo Plugin
+
+### Features
+
+- **Contacts**: Create, list, and get contacts (add subscribers to newsletters)
+- **Lists**: List and get contact lists (find newsletter list IDs)
+- **Campaigns**: Create, list, and get email campaigns (draft newsletters)
+- **Templates**: List and get email templates
+
+### Brevo Setup
+
+1. **Get your API key** from [Brevo Settings](https://app.brevo.com/settings/keys/api)
+
+2. **Create the config file:**
+
+   ```bash
+   mkdir -p ~/.config/brevo
+   cat > ~/.config/brevo/config.json << 'EOF'
+   {
+     "api_key": "your-api-key-here"
+   }
+   EOF
+   chmod 600 ~/.config/brevo/config.json
+   ```
+
+### Brevo Usage
+
+Once set up, ask Claude Code things like:
+
+- "Add john@example.com to the newsletter"
+- "List all my contact lists"
+- "Draft a newsletter about our new product launch"
+- "Show me all my email campaigns"
+- "List available email templates"
+
+---
+
 ## References
 
 - [Google Drive API Search](https://developers.google.com/drive/api/guides/ref-search-terms)
+- [Brevo API Documentation](https://developers.brevo.com/reference)
 - [Claude Code Plugins](https://www.claude.com/blog/claude-code-plugins)
 - [Anthropic Skills Marketplace](https://github.com/anthropics/skills)
 
