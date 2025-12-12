@@ -11,7 +11,7 @@ Access Brevo to manage contacts, contact lists, email campaigns, and templates. 
 
 - List, create, and get **Contacts** (add subscribers to newsletters)
 - List and get **Contact Lists** (find newsletter list IDs)
-- List, create, and get **Email Campaigns** (draft newsletters)
+- List, create, update, and get **Email Campaigns** (draft and iterate on newsletters)
 - List and get **Email Templates**
 
 ## Pre-flight Check
@@ -77,6 +77,9 @@ bash $SKILL_PATH/campaigns/get.sh <campaign_id>
 
 # Create campaign draft
 bash $SKILL_PATH/campaigns/create.sh '<json_data>'
+
+# Update campaign draft (to iterate on content)
+bash $SKILL_PATH/campaigns/update.sh <campaign_id> '<json_data>'
 ```
 
 **Example - Create newsletter draft:**
@@ -100,6 +103,12 @@ bash $SKILL_PATH/campaigns/create.sh '{
 - `recipients` (required): Object with `listIds` array
 
 The campaign is created as a **draft** and can be edited in the Brevo UI before sending.
+
+**Example - Update campaign content:**
+
+```bash
+bash $SKILL_PATH/campaigns/update.sh 123 '{"subject":"Updated Subject Line","htmlContent":"<html><body><h1>Revised Content</h1><p>New newsletter content...</p></body></html>"}'
+```
 
 ### Email Templates
 
@@ -202,4 +211,5 @@ bash $SKILL_PATH/contacts/get.sh john@example.com
 - [Create Contact](https://developers.brevo.com/reference/createcontact)
 - [Get Lists](https://developers.brevo.com/reference/getlists-1)
 - [Create Email Campaign](https://developers.brevo.com/reference/createemailcampaign-1)
+- [Update Email Campaign](https://developers.brevo.com/reference/updateemailcampaign)
 - [Get Templates](https://developers.brevo.com/reference/getsmtptemplates)

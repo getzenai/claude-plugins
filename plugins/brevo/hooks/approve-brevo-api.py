@@ -8,6 +8,7 @@ Safe operations (auto-approved):
 
 Operations requiring approval:
 - POST requests (create contacts, create campaigns)
+- PUT requests (update campaigns)
 """
 
 import json
@@ -38,6 +39,7 @@ def is_safe_operation(command: str) -> bool:
 
     Unsafe operations:
     - */create.sh (writes data)
+    - */update.sh (modifies data)
     """
     # Patterns for safe operations (read-only)
     safe_patterns = [
@@ -49,6 +51,7 @@ def is_safe_operation(command: str) -> bool:
     # Patterns for unsafe operations (writes)
     unsafe_patterns = [
         r"/create\.sh",
+        r"/update\.sh",
     ]
 
     # Check if it's explicitly unsafe first
@@ -66,7 +69,7 @@ def is_safe_operation(command: str) -> bool:
     # If no pattern matches, check for raw curl commands
     # Allow GET requests, deny POST/PATCH/DELETE
     if "curl" in command:
-        if "-X POST" in command or "-X PATCH" in command or "-X DELETE" in command:
+        if "-X POST" in command or "-X PUT" in command or "-X PATCH" in command or "-X DELETE" in command:
             log_debug(f"UNSAFE (curl with write method): {command}")
             return False
         # GET requests (no -X or -X GET)
