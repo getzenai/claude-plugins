@@ -7,8 +7,9 @@ Safe operations (auto-approved):
 - check-auth.sh
 
 Operations requiring approval:
-- POST requests (create contacts, create campaigns)
-- PUT requests (update campaigns)
+- POST requests (create contacts, create campaigns, create lists)
+- PUT requests (update contacts, campaigns, lists)
+- DELETE requests (delete contacts, campaigns, lists)
 """
 
 import json
@@ -40,6 +41,7 @@ def is_safe_operation(command: str) -> bool:
     Unsafe operations:
     - */create.sh (writes data)
     - */update.sh (modifies data)
+    - */delete.sh (removes data)
     """
     # Patterns for safe operations (read-only)
     safe_patterns = [
@@ -52,6 +54,7 @@ def is_safe_operation(command: str) -> bool:
     unsafe_patterns = [
         r"/create\.sh",
         r"/update\.sh",
+        r"/delete\.sh",
     ]
 
     # Check if it's explicitly unsafe first

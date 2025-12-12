@@ -9,10 +9,10 @@ Access Brevo to manage contacts, contact lists, email campaigns, and templates. 
 
 ## Capabilities
 
-- List, create, and get **Contacts** (add subscribers to newsletters)
-- List and get **Contact Lists** (find newsletter list IDs)
-- List, create, update, and get **Email Campaigns** (draft and iterate on newsletters)
-- List and get **Email Templates**
+- Full CRUD for **Contacts** (create, read, update, delete subscribers)
+- Full CRUD for **Contact Lists** (create, read, update, delete lists)
+- Full CRUD for **Email Campaigns** (create, read, update, delete drafts)
+- Read **Email Templates** (list and get)
 
 ## Pre-flight Check
 
@@ -36,6 +36,21 @@ bash $SKILL_PATH/lists/list.sh [limit] [offset]
 
 # Get details of a specific list
 bash $SKILL_PATH/lists/get.sh <list_id>
+
+# Create a new list
+bash $SKILL_PATH/lists/create.sh '<json_data>'
+
+# Update a list
+bash $SKILL_PATH/lists/update.sh <list_id> '<json_data>'
+
+# Delete a list (contacts are not deleted)
+bash $SKILL_PATH/lists/delete.sh <list_id>
+```
+
+**Example - Create a new list:**
+
+```bash
+bash $SKILL_PATH/lists/create.sh '{"name":"VIP Customers","folderId":1}'
 ```
 
 ### Contacts
@@ -49,6 +64,12 @@ bash $SKILL_PATH/contacts/get.sh <identifier>
 
 # Create contact (optionally add to lists)
 bash $SKILL_PATH/contacts/create.sh '<json_data>'
+
+# Update contact
+bash $SKILL_PATH/contacts/update.sh <identifier> '<json_data>'
+
+# Delete contact
+bash $SKILL_PATH/contacts/delete.sh <identifier>
 ```
 
 **Example - Add contact to newsletter:**
@@ -63,6 +84,12 @@ bash $SKILL_PATH/contacts/create.sh '{"email":"john@example.com","attributes":{"
 - `attributes`: Object with contact attributes (FIRSTNAME, LASTNAME, etc.)
 - `listIds`: Array of list IDs to add the contact to
 - `updateEnabled`: If true, updates existing contact with same email (default: false)
+
+**Example - Update contact attributes:**
+
+```bash
+bash $SKILL_PATH/contacts/update.sh john@example.com '{"attributes":{"LASTNAME":"Smith"}}'
+```
 
 ### Email Campaigns
 
@@ -80,6 +107,9 @@ bash $SKILL_PATH/campaigns/create.sh '<json_data>'
 
 # Update campaign draft (to iterate on content)
 bash $SKILL_PATH/campaigns/update.sh <campaign_id> '<json_data>'
+
+# Delete campaign
+bash $SKILL_PATH/campaigns/delete.sh <campaign_id>
 ```
 
 **Example - Create newsletter draft:**
@@ -212,4 +242,10 @@ bash $SKILL_PATH/contacts/get.sh john@example.com
 - [Get Lists](https://developers.brevo.com/reference/getlists-1)
 - [Create Email Campaign](https://developers.brevo.com/reference/createemailcampaign-1)
 - [Update Email Campaign](https://developers.brevo.com/reference/updateemailcampaign)
+- [Delete Email Campaign](https://developers.brevo.com/reference/deleteemailcampaign)
+- [Update Contact](https://developers.brevo.com/reference/updatecontact)
+- [Delete Contact](https://developers.brevo.com/reference/deletecontact)
+- [Create List](https://developers.brevo.com/reference/createlist-1)
+- [Update List](https://developers.brevo.com/reference/updatelist-1)
+- [Delete List](https://developers.brevo.com/reference/deletelist-1)
 - [Get Templates](https://developers.brevo.com/reference/getsmtptemplates)
