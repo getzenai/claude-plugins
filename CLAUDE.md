@@ -65,6 +65,24 @@ Plugins can be installed via:
 | `oauth-app.json`   | Plugin skill folder       | No (gitignored)    |
 | `credentials.json` | `~/.config/gdrive-skill/` | No (user-specific) |
 
+## Development Guidelines
+
+### Version Numbers
+
+When making changes to a plugin, bump the version in `.claude-plugin/plugin.json`:
+
+- **Patch** (1.0.x): Bug fixes, minor tweaks
+- **Minor** (1.x.0): New features, enhancements
+- **Major** (x.0.0): Breaking changes
+
+### Code Formatting
+
+This repository uses Prettier for formatting. Format files before committing:
+
+```bash
+npx prettier --write <file>
+```
+
 ## Google API Documentation
 
 - [Calendar API v3](https://developers.google.com/workspace/calendar/api/v3/reference)
